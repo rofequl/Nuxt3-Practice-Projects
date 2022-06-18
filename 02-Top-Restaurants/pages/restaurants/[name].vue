@@ -10,7 +10,7 @@ const restaurant = restaurants.find((r) => r.name === name)
   <div>
     <div class="d-flex">
       <div class="image-container">
-        <img class="img-fluid" :src="restaurant.imageUrl" alt=""/>
+        <img class="img-fluid img-thumbnail" :src="restaurant.imageUrl" alt=""/>
       </div>
       <div class="info-container">
         <h1>{{ restaurant.name }}</h1>
