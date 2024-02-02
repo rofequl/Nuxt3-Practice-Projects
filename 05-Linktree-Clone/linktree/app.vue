@@ -1,4 +1,6 @@
 <script setup>
+import UpdateLinkOverlay from "~/components/UpdateLinkOverlay.vue";
+
 const userStore = useUserStore()
 const {isMobile, updatedLinkId, addLinkOverlay, isPreviewOverlay} = storeToRefs(userStore)
 
@@ -54,5 +56,7 @@ const checkPath = (path) => {
   <VitePwaManifest/>
   <div v-if="bgIsGray" class="bg-[#F3F3F1] fixed w-full h-full z-[-1]"/>
   <NuxtPage/>
+  <UpdateLinkOverlay v-if="isMobile && updatedLinkId"/>
+  <AddLinkOverlay v-if="isMobile && addLinkOverlay"/>
   <PreviewOverlay v-if="!isMobile && isPreviewOverlay"/>
 </template>

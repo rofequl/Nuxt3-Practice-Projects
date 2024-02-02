@@ -1,7 +1,23 @@
 <script setup>
+const userStore = useUserStore()
+const router = useRouter()
+
 let email = ref(null)
 let password = ref(null)
 let errors = ref(null)
+
+const login = async () => {
+  errors.value = null
+  try {
+    await userStore.getToken()
+    await userStore.login(email.value, password.value)
+    await userStore.getUser()
+    await router.push('/admin')
+  } catch (error) {
+    console.log(error)
+    errors.value = error.response.data.errors
+  }
+}
 </script>
 
 <template>
