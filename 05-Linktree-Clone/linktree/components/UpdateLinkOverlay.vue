@@ -1,5 +1,93 @@
 <script setup>
+const userStore = useUserStore()
+const {updatedLinkId} = storeToRefs(userStore)
 
+let isName = ref(false)
+let isLink = ref(false)
+let name = ref('')
+let url = ref('')
+let data = ref(null)
+let currentLink = ref(null)
+let openCropper = ref(false)
+let errors = ref(null)
+
+onMounted(() => {
+  //getLinkById()
+  //userStore.hidePageOverflow(true, 'AdminPage')
+
+  document.addEventListener('mouseup', function (e) {
+    let editNameInput = document.getElementById('editNameInputMobile')
+    if (!editNameInput.contains(e.target)) {
+      editNameInput.blur()
+      isName.value = false
+    }
+  });
+
+  document.addEventListener('mouseup', function (e) {
+    let editLinkInput = document.getElementById('editLinkInputMobile')
+    if (!editLinkInput.contains(e.target)) {
+      editLinkInput.blur()
+      isLink.value = false
+    }
+  });
+})
+const getLinkById = () => {
+  userStore.allLinks.forEach(link => {
+    if (updatedLinkId.value === link.id) {
+      currentLink.value = link
+      name.value = link.name
+      url.value = link.url
+    }
+  });
+}
+const close = () => updatedLinkId.value = 0
+const updateLinkImage = async () => {
+  //
+}
+
+const deleteLink = async () => {
+  let res = confirm('Are you sure you want to delete this link?')
+  //
+}
+
+const isFocused = (str) => {
+  if (str === 'isName') {
+    setTimeout(() => document.getElementById('editNameInputMobile').focus())
+    isName.value = true;
+    isLink.value = false
+  }
+
+  if (str === 'isLink') {
+    setTimeout(() => document.getElementById('editLinkInputMobile').focus())
+    isName.value = false;
+    isLink.value = true
+  }
+}
+
+const updateLink = useDebounce(async () => {
+  //
+}, 500)
+
+watch(() => name.value, () => {
+  if (name.value && currentLink.value.name !== name.value) {
+    errors.value = null
+    updateLink()
+  }
+})
+
+watch(() => url.value, () => {
+  if (url.value && currentLink.value.url !== url.value) {
+    errors.value = null
+    updateLink()
+  }
+})
+
+watch(() => data.value, async () => await updateLinkImage())
+
+onUnmounted(() => {
+  // userStore.hidePageOverflow(false, 'AdminPage')
+  updatedLinkId.value = 0
+})
 </script>
 
 <template>
@@ -55,7 +143,6 @@
       <img v-if="currentLink && currentLink.image" class="mx-auto pt-4 aspect-square object-cover"
            width="300" :src="currentLink.image">
     </div>
-    <CropperModal v-if="openCropper" :linkId="updatedLinkId"
-        @data="data = $event" @close="openCropper = false"/>
+
   </div>
 </template>
